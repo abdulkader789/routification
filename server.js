@@ -36,6 +36,12 @@ app.post("/user", (req, res) => {
   const formData = req.body; // Get the parsed JSON data from the request body
   console.log("data from table ", formData);
 
+  for (const key in formData) {
+    if (formData[key] === "") {
+      formData[key] = "NULL"; // Replace empty strings with "no value"
+    }
+  }
+  console.log("after setting null value: ", formData);
   let td_r0_c1 = formData.td_r0_c1;
   let td_r0_c2 = formData.td_r0_c2;
   let td_r0_c3 = formData.td_r0_c3;
@@ -101,7 +107,7 @@ app.post("/user", (req, res) => {
   const friday = [td_r7_c1, td_r7_c2, td_r7_c3, td_r7_c4, td_r7_c5];
 
   const query =
-    "INSERT INTO routineData (time, saturday,sunday,monday,tuesday,wednesday,friday) VALUES (?, ?, ?,?,?,?,?)";
+    "INSERT INTO routineData (time, saturday,sunday,monday,tuesday,wednesday,thursday,friday) VALUES (?,?, ?, ?,?,?,?,?)";
 
   // Join the arrays into comma-separated strings for insertion
   const timeValues = time.join(", ");
@@ -130,7 +136,7 @@ app.post("/user", (req, res) => {
       res.status(500).send("Error inserting data");
     } else {
       console.log("Data inserted successfully");
-      res.send("Thank you for submitting data");
+      //res.send("Thank you for submitting data");
     }
   });
 

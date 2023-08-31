@@ -15,7 +15,7 @@ h1 {
 }
 
 .routine-table td,th {
-    padding: 10px;
+    padding: 10px; 
     text-align: center;
     border: 1px solid #ccc;
     width: 300px;
@@ -34,12 +34,17 @@ input {
     box-sizing: border-box;
     outline:none;
     height:100%;
+    
+    
 }
 
 
-table td:hover{
+
+table.routine-table td:hover,
+table.routine-table td:hover input {
     background-color: rgb(232, 230, 230);
 }
+
 /* CSS */
 .btn{
   background-color: #222;
