@@ -10,7 +10,7 @@ const db = mysql.createConnection({
   host: "localhost",
   user: "root",
   password: "",
-  database: "routine",
+  database: "routification",
 });
 
 //Connect to the database
@@ -35,6 +35,7 @@ app.get("/", (req, res) => {
 app.post("/user", (req, res) => {
   const formData = req.body; // Get the parsed JSON data from the request body
   console.log("data from table ", formData);
+
   let td_r0_c1 = formData.td_r0_c1;
   let td_r0_c2 = formData.td_r0_c2;
   let td_r0_c3 = formData.td_r0_c3;
@@ -49,64 +50,79 @@ app.post("/user", (req, res) => {
 
   let td_r2_c1 = formData.td_r2_c1;
   let td_r2_c2 = formData.td_r2_c2;
+  let td_r2_c3 = formData.td_r2_c3;
+  let td_r2_c4 = formData.td_r2_c4;
+  let td_r2_c5 = formData.td_r2_c5;
 
   let td_r3_c1 = formData.td_r3_c1;
   let td_r3_c2 = formData.td_r3_c2;
+  let td_r3_c3 = formData.td_r3_c3;
+  let td_r3_c4 = formData.td_r3_c4;
+  let td_r3_c5 = formData.td_r3_c5;
 
   let td_r4_c1 = formData.td_r4_c1;
   let td_r4_c2 = formData.td_r4_c2;
+  let td_r4_c3 = formData.td_r4_c3;
+  let td_r4_c4 = formData.td_r4_c4;
+  let td_r4_c5 = formData.td_r4_c5;
 
   let td_r5_c1 = formData.td_r5_c1;
   let td_r5_c2 = formData.td_r5_c2;
+  let td_r5_c3 = formData.td_r5_c3;
+  let td_r5_c4 = formData.td_r5_c4;
+  let td_r5_c5 = formData.td_r5_c5;
 
   let td_r6_c1 = formData.td_r6_c1;
   let td_r6_c2 = formData.td_r6_c2;
+  let td_r6_c3 = formData.td_r6_c3;
+  let td_r6_c4 = formData.td_r6_c4;
+  let td_r6_c5 = formData.td_r6_c5;
 
   let td_r7_c1 = formData.td_r7_c1;
   let td_r7_c2 = formData.td_r7_c2;
+  let td_r7_c3 = formData.td_r7_c3;
+  let td_r7_c4 = formData.td_r7_c4;
+  let td_r7_c5 = formData.td_r7_c5;
 
-  const routine = [
-    "Day/Time",
-    "Saturday",
-    "Sunday",
-    "Monday",
-    "Tuesday",
-    "Wednesday",
-    "Thursday",
-    "Friday",
-  ];
+  const time = [td_r0_c1, td_r0_c2, td_r0_c3, td_r0_c4, td_r0_c5];
 
-  const class1 = [
-    td_r0_c1,
-    td_r1_c1,
-    td_r2_c1,
-    td_r3_c1,
-    td_r4_c1,
-    td_r5_c1,
-    td_r6_c1,
-    td_r7_c1,
-  ];
+  const saturday = [td_r1_c1, td_r1_c2, td_r1_c3, td_r1_c4, td_r1_c5];
 
-  const class2 = [
-    td_r0_c2,
-    td_r1_c2,
-    td_r2_c2,
-    td_r3_c2,
-    td_r4_c2,
-    td_r5_c2,
-    td_r6_c2,
-    td_r7_c2,
-  ];
+  const sunday = [td_r2_c1, td_r2_c2, td_r2_c3, td_r2_c4, td_r2_c5];
+
+  const monday = [td_r3_c1, td_r3_c2, td_r3_c3, td_r3_c4, td_r3_c5];
+
+  const tuesday = [td_r4_c1, td_r4_c2, td_r4_c3, td_r4_c4, td_r4_c5];
+
+  const wednesday = [td_r5_c1, td_r5_c2, td_r5_c3, td_r5_c4, td_r5_c5];
+
+  const thursday = [td_r6_c1, td_r6_c2, td_r6_c3, td_r6_c4, td_r6_c5];
+
+  const friday = [td_r7_c1, td_r7_c2, td_r7_c3, td_r7_c4, td_r7_c5];
 
   const query =
-    "INSERT INTO routinedata (routine, class1, class2) VALUES (?, ?, ?)";
+    "INSERT INTO routineData (time, saturday,sunday,monday,tuesday,wednesday,friday) VALUES (?, ?, ?,?,?,?,?)";
 
   // Join the arrays into comma-separated strings for insertion
-  const routineValues = routine.join(", ");
-  const class1Values = class1.join(", ");
-  const class2Values = class2.join(", ");
+  const timeValues = time.join(", ");
+  const saturdayValues = saturday.join(", ");
+  const sundayValues = sunday.join(", ");
+  const mondayValues = monday.join(", ");
+  const tuesdayValues = tuesday.join(", ");
+  const wednesdayValues = wednesday.join(", ");
+  const thursdayValues = thursday.join(", ");
+  const fridayValues = friday.join(", ");
 
-  const values = [routineValues, class1Values, class2Values];
+  const values = [
+    timeValues,
+    saturdayValues,
+    sundayValues,
+    mondayValues,
+    tuesdayValues,
+    wednesdayValues,
+    thursdayValues,
+    fridayValues,
+  ];
 
   db.query(query, values, (err, result) => {
     if (err) {
