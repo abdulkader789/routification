@@ -25,6 +25,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 // run css
 app.use(express.static(__dirname));
+app.use(express.static(path.join(__dirname, "src")));
 
 //run html
 app.get("/", (req, res) => {
@@ -32,6 +33,15 @@ app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "/index.html"));
 });
 
+app.get("/user", (req, res) => {
+  res.sendFile(path.join(__dirname, "src/views/user.html"));
+});
+
+app.get("/signup", (req, res) => {
+  res.sendFile(path.join(__dirname, "/src/views/signup.html"));
+});
+
+//form event from table
 app.post("/user", (req, res) => {
   const formData = req.body; // Get the parsed JSON data from the request body
   console.log("data from table ", formData);
@@ -137,12 +147,31 @@ app.post("/user", (req, res) => {
     } else {
       console.log("Data inserted successfully");
       //res.send("Thank you for submitting data");
+      res.redirect("/user");
     }
   });
 
-  // Perform necessary database operations here, such as inserting the data into the database
+  // res.send("Thank you for submitting data");
+});
 
-  res.send("Thank you for submitting data");
+app.post("/signup", (req, res) => {
+  const signupData = req.body; // Get the parsed JSON data from the request body
+  console.log("data from login ", signupData);
+
+  const username = signupData.username;
+  const email = signupData.email;
+  const password = signupData.password;
+
+  const sql = "INSERT INTO users (username,email, password) VALUES (?,?,?)";
+  db.query(sql, [username, email, password], (err, result) => {
+    if (err) {
+      console.error("Error inserting data:", err);
+    } else {
+      console.log("Data inserted successfully");
+      res.redirect("/user");
+    }
+    //db.end(); // Close the database connection
+  });
 });
 
 app.listen(3000, () => {

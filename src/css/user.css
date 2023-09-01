@@ -1,12 +1,16 @@
 body {
     font-family: Arial, sans-serif;
     margin: 0;
-    padding: 20px;
 }
 
 h1 {
     text-align: center;
 }
+
+
+
+
+
 
 .routine-table {
     width: 100%;
@@ -29,8 +33,8 @@ h1 {
 
 input {
     width: 100%;
-    border: none; /* Remove default border */
-    border-bottom: 1px solid #ccc; /* Add bottom border */
+    border: none;
+    border-bottom: 1px solid #ccc; 
     box-sizing: border-box;
     outline:none;
     height:100%;
@@ -45,7 +49,7 @@ table.routine-table td:hover input {
     background-color: rgb(232, 230, 230);
 }
 
-/* CSS */
+
 .btn{
   background-color: #222;
  
@@ -77,4 +81,4 @@ table.routine-table td:hover input {
 .btn:hover,
 .btn:focus {
   opacity: .75;
-}
+} 
