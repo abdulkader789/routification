@@ -3,8 +3,25 @@ const bodyParser = require("body-parser");
 const mysql = require("mysql");
 const path = require("path");
 
+const session = require("express-session"); // Import express-session module
+
 const app = express();
 app.use(bodyParser.json());
+
+const crypto = require("crypto");
+
+// Generate a random secret key (32 characters)
+const secretKey = crypto.randomBytes(16).toString("hex");
+console.log("Secret Key:", secretKey);
+
+// Configure express-session
+app.use(
+  session({
+    secret: secretKey, // Replace with a secret key for session management
+    resave: false,
+    saveUninitialized: true,
+  })
+);
 
 const db = mysql.createConnection({
   host: "localhost",
@@ -158,7 +175,8 @@ app.post("/user", (req, res) => {
   // res.send("Thank you for submitting data");
 });
 
-// Login route
+// Add this code to your server.js
+
 app.post("/login", (req, res) => {
   const { email, password } = req.body;
 
@@ -174,12 +192,25 @@ app.post("/login", (req, res) => {
       // User not found, return an error response or redirect to signup
       return res.status(404).json({ error: "User not found. Please sign up." });
     } else {
+      // User found, store user data in the session
+      req.session.user = results[0]; // Assuming the first result is the user data
+
+      // Redirect to /user
       res.redirect("/user");
     }
-
-    // User found, you can handle the login logic here (e.g., create a session)
-    //res.status(200).json({ message: "Login successful" });
   });
+});
+// Define a route to handle requests for user data
+app.get("/user-data", (req, res) => {
+  // Check if the user is authenticated (check if user data is in the session)
+  if (req.session.user) {
+    // If authenticated, send the user data as JSON
+    const userData = req.session.user;
+    res.json(userData);
+  } else {
+    // If not authenticated, send an error response
+    res.status(401).json({ error: "Unauthorized" });
+  }
 });
 
 app.post("/signup", (req, res) => {
