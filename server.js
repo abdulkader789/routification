@@ -41,6 +41,10 @@ app.get("/signup", (req, res) => {
   res.sendFile(path.join(__dirname, "/src/views/signup.html"));
 });
 
+app.get("/login", (req, res) => {
+  res.sendFile(path.join(__dirname, "/src/views/login.html"));
+});
+
 //form event from table
 app.post("/user", (req, res) => {
   const formData = req.body; // Get the parsed JSON data from the request body
@@ -154,23 +158,62 @@ app.post("/user", (req, res) => {
   // res.send("Thank you for submitting data");
 });
 
-app.post("/signup", (req, res) => {
-  const signupData = req.body; // Get the parsed JSON data from the request body
-  console.log("data from login ", signupData);
+// Login route
+app.post("/login", (req, res) => {
+  const { email, password } = req.body;
 
-  const username = signupData.username;
-  const email = signupData.email;
-  const password = signupData.password;
-
-  const sql = "INSERT INTO users (username,email, password) VALUES (?,?,?)";
-  db.query(sql, [username, email, password], (err, result) => {
+  // Check if the user with the provided email and password exists in the database
+  const query = "SELECT * FROM users WHERE email = ? AND password = ?";
+  db.query(query, [email, password], (err, results) => {
     if (err) {
-      console.error("Error inserting data:", err);
+      console.error("Error querying the database:", err);
+      return res.status(500).json({ error: "Internal server error" });
+    }
+
+    if (results.length === 0) {
+      // User not found, return an error response or redirect to signup
+      return res.status(404).json({ error: "User not found. Please sign up." });
     } else {
-      console.log("Data inserted successfully");
       res.redirect("/user");
     }
-    //db.end(); // Close the database connection
+
+    // User found, you can handle the login logic here (e.g., create a session)
+    //res.status(200).json({ message: "Login successful" });
+  });
+});
+
+app.post("/signup", (req, res) => {
+  console.log(req.body);
+  const { username, email, password } = req.body;
+
+  // Check if the user with the provided email and username already exists in the database
+  const query = "SELECT * FROM users WHERE email = ?";
+  db.query(query, [email], (err, results) => {
+    if (err) {
+      console.error("Error querying the database:", err);
+      return res.status(500).json({ error: "Internal server error" });
+    }
+
+    if (results.length > 0) {
+      // User with the provided email or username already exists, show the error message
+      return res
+        .status(400)
+        .json({ error: "User already exists. Please log in." });
+    } else {
+      // User doesn't exist, insert the new user data into the database
+      const insertQuery =
+        "INSERT INTO users (username, email, password) VALUES (?, ?, ?)";
+      db.query(insertQuery, [username, email, password], (err) => {
+        if (err) {
+          console.error("Error inserting data into the database:", err);
+          console.log(err);
+          return res.status(500).json({ error: "Internal server error" });
+        }
+
+        // User registered successfully
+        res.redirect("/login");
+      });
+    }
   });
 });
 

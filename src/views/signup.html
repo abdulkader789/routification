@@ -8,13 +8,20 @@
 </head>
 
 <body>
-    <form action="/signup" method="POST">
-        <input type="text" placeholder="username" name="username" required>
-        <input type="text" placeholder="email" name="email" required>
-        <input type="password" placeholder="password" name="password" required>
+    <form id="signup-form" action="/signup" method="POST">
+        <input type="text" placeholder="username" name="username" autocomplete="username" required>
+        <input type="text" placeholder="email" name="email" autocomplete="email" required>
+        <input type="password" placeholder="password" name="password" autocomplete="current-password" required>
 
         <button type="submit">Submit</button>
+
     </form>
+
+    <!-- Add your scripts here -->
+
+    <script src="../js/signup.js"></script>
+
+
 </body>
 
 </html>
