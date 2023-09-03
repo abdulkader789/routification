@@ -34,12 +34,15 @@ h1 {
 input {
     width: 100%;
     border: none;
-    border-bottom: 1px solid #ccc; 
+    
     box-sizing: border-box;
     outline:none;
     height:100%;
     
     
+}
+input:focus{
+    border-bottom: 1px solid #ccc; 
 }
 
 

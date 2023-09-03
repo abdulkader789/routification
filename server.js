@@ -50,8 +50,12 @@ app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "/index.html"));
 });
 
-app.get("/user", (req, res) => {
-  res.sendFile(path.join(__dirname, "src/views/user.html"));
+app.get("/routine", (req, res) => {
+  res.sendFile(path.join(__dirname, "src/views/routine.html"));
+});
+
+app.get("/profile", (req, res) => {
+  res.sendFile(path.join(__dirname, "src/views/profile.html"));
 });
 
 app.get("/signup", (req, res) => {
@@ -63,7 +67,21 @@ app.get("/login", (req, res) => {
 });
 
 //form event from table
-app.post("/user", (req, res) => {
+app.post("/routine", (req, res) => {
+  if (req.session.user) {
+    // If authenticated, send the user data as JSON
+    const userData = req.session.user;
+
+    // Log the username and email
+    const { username, email } = userData;
+    console.log("Username:", username);
+    console.log("Email:", email);
+  } else {
+    // If not authenticated, send an error response or redirect to login
+    // You can customize this behavior based on your requirements
+    res.status(401).json({ error: "Unauthorized" });
+  }
+
   const formData = req.body; // Get the parsed JSON data from the request body
   console.log("data from table ", formData);
 
@@ -72,6 +90,7 @@ app.post("/user", (req, res) => {
       formData[key] = "NULL"; // Replace empty strings with "no value"
     }
   }
+
   console.log("after setting null value: ", formData);
   let td_r0_c1 = formData.td_r0_c1;
   let td_r0_c2 = formData.td_r0_c2;
@@ -137,9 +156,6 @@ app.post("/user", (req, res) => {
 
   const friday = [td_r7_c1, td_r7_c2, td_r7_c3, td_r7_c4, td_r7_c5];
 
-  const query =
-    "INSERT INTO routineData (time, saturday,sunday,monday,tuesday,wednesday,thursday,friday) VALUES (?,?, ?, ?,?,?,?,?)";
-
   // Join the arrays into comma-separated strings for insertion
   const timeValues = time.join(", ");
   const saturdayValues = saturday.join(", ");
@@ -160,6 +176,8 @@ app.post("/user", (req, res) => {
     thursdayValues,
     fridayValues,
   ];
+  const query =
+    "INSERT INTO routinedata (username,email,time, saturday,sunday,monday,tuesday,wednesday,thursday,friday) VALUES (?,?,?,?, ?, ?,?,?,?,?)";
 
   db.query(query, values, (err, result) => {
     if (err) {
@@ -168,7 +186,7 @@ app.post("/user", (req, res) => {
     } else {
       console.log("Data inserted successfully");
       //res.send("Thank you for submitting data");
-      res.redirect("/user");
+      res.redirect("/profile");
     }
   });
 
@@ -190,13 +208,14 @@ app.post("/login", (req, res) => {
 
     if (results.length === 0) {
       // User not found, return an error response or redirect to signup
-      return res.status(404).json({ error: "User not found. Please sign up." });
+      //return res.status(404).json({ error: "User not found. Please sign up." });
+      res.redirect("/signup");
     } else {
       // User found, store user data in the session
       req.session.user = results[0]; // Assuming the first result is the user data
 
       // Redirect to /user
-      res.redirect("/user");
+      res.redirect("/routine");
     }
   });
 });
@@ -242,7 +261,7 @@ app.post("/signup", (req, res) => {
         }
 
         // User registered successfully
-        res.redirect("/login");
+        res.redirect("/routine");
       });
     }
   });
